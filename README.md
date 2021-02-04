@@ -23,7 +23,7 @@ Install
 
 ```vim
 Plug 'cheap-glitch/vim-v' " syntax highlighting
-Plug 'nvim-lua/plenery.nvim'
+Plug 'nvim-lua/plenary.nvim'
 Plug 'tami5/vlang.nvim'
 ```
 
