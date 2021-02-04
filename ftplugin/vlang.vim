@@ -21,5 +21,6 @@ if get(g:, "vlang_nvim_mappings", 1) == 1
   " nmap <buffer> <leader>et <Plug>(VlangTestCurrent)
   nmap <buffer> <silent> <leader>ef :lua require'vlang'.run_file()<CR>
   nmap <buffer> <silent> <leader>et :lua require'vlang'.test()<CR>
+  nmap <buffer> <silent> <leader>ec :lua require'vlang'.prod(vim.fn.input("compile to: "))<CR>
 endif
 
