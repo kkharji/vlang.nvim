@@ -3,6 +3,11 @@ local misc = require'vlang.misc'
 local qf = require'vlang.qf'
 local run = require'vlang.runner'
 local vtrue = function (num) return num == 1 end
+local on_write = {
+  check = (vim.g.vlang_nvim_check_on_write or 1) == 1,
+  format = (vim.g.vlang_nvim_fmt_on_write or 1) == 1,
+  compile = (vim.g.vlang_nvim_compile_on_write or 1) == 1
+}
 
 M.vet = function(cb)
   if type(cb) =="boolean" and cb == false then return end
@@ -63,13 +68,13 @@ M.run_file = function()
 end
 
 local vcompile = function(succ)
-  if succ and vtrue(vim.g.vlang_nvim_compile_on_write) then
+  if succ and on_write.compile then
     return M.compile()
   end
 end
 
 local vformat = function(succ)
-  if succ and vtrue(vim.g.vlang_nvim_check_on_write) then
+  if succ and on_write.format then
     return M.fmt(vcompile)
   else
     return vcompile(succ)
@@ -77,11 +82,11 @@ local vformat = function(succ)
 end
 
 M.write_post = function()
-  if vtrue(vim.g.vlang_nvim_check_on_write) then
+  if on_write.check then
     return M.vet(vformat)
-  elseif vtrue(vim.g.vlang_nvim_fmt_on_write) then
+  elseif on_write.format then
     return M.fmt(vcompile)
-  elseif vtrue(vim.g.vlang_nvim_compile_on_write) then
+  elseif on_write.compile then
     return vcompile(true)
   end
 end

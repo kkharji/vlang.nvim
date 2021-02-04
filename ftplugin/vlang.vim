@@ -6,6 +6,8 @@ command! -buffer -bang -nargs=0 Vfmt lua require'vlang'.fmt()
 command! -buffer -bang -nargs=0 Vtest lua require'vlang'.test()
 command! -buffer -bang -nargs=0 Vrun lua require'vlang'.run_file()
 command! -buffer -bang -nargs=0 Vvet lua require'vlang'.vet()
+command! -buffer -bang -nargs=0 Vcom lua require'vlang'.compile()
+command! -buffer -bang -nargs=0 Vprod lua require'vlang'.prod()
 
 " TODO: fixme
 nnoremap <Plug>VlangRunCurrent :lua require'vlang'.run_file()<CR>
