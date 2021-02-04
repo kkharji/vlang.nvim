@@ -1,13 +1,9 @@
-let g:vlang_nvim_check_on_write = get(g:, "vlang_check_on_write", 1)
-let g:vlang_nvim_format_on_write = get(g:, "vlang_format_on_write", 1)
-let g:vlang_nvim_compile_on_write =  get(g:, "vlang_compile_on_write", 1)
-
 command! -buffer -bang -nargs=0 Vfmt lua require'vlang'.fmt()
 command! -buffer -bang -nargs=0 Vtest lua require'vlang'.test()
 command! -buffer -bang -nargs=0 Vrun lua require'vlang'.run_file()
 command! -buffer -bang -nargs=0 Vvet lua require'vlang'.vet()
-command! -buffer -bang -nargs=0 Vcom lua require'vlang'.compile()
-command! -buffer -bang -nargs=0 Vprod lua require'vlang'.prod()
+command! -buffer -bang -nargs=+ Vcom lua require'vlang'.compile(vim.fn.expand("<args>"))
+command! -buffer -bang -nargs=+ Vprod lua require'vlang'.prod(vim.fn.expand("<args>"))
 
 " TODO: fixme
 nnoremap <Plug>VlangRunCurrent :lua require'vlang'.run_file()<CR>

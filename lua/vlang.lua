@@ -2,7 +2,7 @@ local M = {}
 local misc = require'vlang.misc'
 local qf = require'vlang.qf'
 local run = require'vlang.runner'
-local vtrue = function (num) return num == 1 end
+
 local on_write = {
   check = (vim.g.vlang_nvim_check_on_write or 1) == 1,
   format = (vim.g.vlang_nvim_fmt_on_write or 1) == 1,
@@ -41,21 +41,51 @@ M.fmt = function(cb)
   }
 end
 
-M.compile = function(cb)
-  if type(cb) =="boolean" and cb == false then return end
+M.compile = function(args)
+  if type(args) == "boolean" and args == false then return end
 
+  local cb = type(args) == "function" and args
   local path = vim.fn.expand("%:p")
-  local tmp = misc.get_tmp_filename(path, "c")
+  local tmp = type(args) == "string" and args or misc.get_tmp_filename(path, "c")
+  local notautocmd = type(args) == "string" and true
   if vim.loop.fs_stat(tmp) ~= nil then vim.loop.fs_unlink(tmp) end
+
   return run.job {
     args = { "-o", tmp, path },
     on_exit = function(lines, succ, winnr, _)
       if not succ then
         print("vlang.nvim: Failed to compile")
         qf.open(lines, winnr)
+        elseif notautocmd then
+          local msg = "vlang.nvim: compiled %s to %s"
+          print(msg:format(vim.fn.expand("%"), args))
       end
-      compiled_file = tmp
+      -- if not notautocmd then vim.loop.fs_unlink(tmp) end
       return cb and cb(succ)
+    end
+  }
+end
+
+M.prod = function(args)
+  if type(args) == "boolean" and args == false then return end
+
+  local cb = type(args) == "function" and args
+  local path = vim.fn.expand("%:p")
+  local tmp = type(args) == "string" and args or misc.get_tmp_filename(path, "c")
+
+  if vim.loop.fs_stat(tmp) ~= nil then vim.loop.fs_unlink(tmp) end
+
+  return run.job {
+    args = { "-prod", "-o", args, path },
+    on_exit = function(lines, succ, winnr, _)
+      if not succ then
+        print("vlang.nvim: Failed to compile")
+        qf.open(lines, winnr)
+        else
+          local msg = "vlang.nvim: proc compiled %s to %s"
+          print(msg:format(vim.fn.expand("%"), args))
+      end
+      return type(cb) == "function" and args(cb)
     end
   }
 end
