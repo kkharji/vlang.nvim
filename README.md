@@ -52,6 +52,7 @@ Mappings
 ```vim
 nmap <buffer> <silent> <leader>ef :lua require'vlang'.run_file()<CR>
 nmap <buffer> <silent> <leader>ec :lua require'vlang'.prod(vim.fn.input("compile to: "))<CR>
+nmap <buffer> <silent> <leader>ee :lua require'vlang'.run_file(vim.fn.input("args: "))<CR>
 nmap <buffer> <silent> <leader>et :lua require'vlang'.test()<CR> " TODO
 ```
 

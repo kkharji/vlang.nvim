@@ -1,4 +1,4 @@
-local runner = {}
+local run = {}
 local compiled_file
 local misc = require'vlang.misc'
 local Job = require'plenary.job'
@@ -29,7 +29,7 @@ local outputter = vim.schedule_wrap(function(bufnr, ...)
   end
 end)
 
-runner._run_path = function(path, bufnr, istest, len)
+run._run_path = function(path, bufnr, istest, len, run_args)
   local args
   local stat = vim.loop.fs_stat(path)
   local cmd = "v" -- not sure if this would even work
@@ -54,10 +54,16 @@ runner._run_path = function(path, bufnr, istest, len)
     vim.cmd('mode')
   end)
 
-  return Job:new { command = cmd, args = args, on_stdout = out, on_stderr = out, on_exit = exit }
+  return Job:new {
+    command = cmd,
+    args = vim.tbl_flatten({args, run_args}),
+    on_stdout = out,
+    on_stderr = out,
+    on_exit = exit
+  }
 end
 
-runner.float = function(opts)
+run.float = function(opts)
   -- print("Starting...")
 
   opts = vim.tbl_deep_extend('force', {
@@ -76,7 +82,7 @@ runner.float = function(opts)
   end
 
   local jobs = F.map(function(path)
-    return runner._run_path(path, float.bufnr, opts.test, len)
+    return run._run_path(path, float.bufnr, opts.test, len, opts.run_args)
   end, paths)
 
   log.debug("Running...")
@@ -89,7 +95,7 @@ runner.float = function(opts)
   return true
 end
 
-runner.job = function(opts)
+run.job = function(opts)
   opts = opts or {}
   local winnr, pos = misc.get_buf_info()
   return Job:new({
@@ -103,4 +109,4 @@ runner.job = function(opts)
   }):start()
 end
 
-return runner
+return run

@@ -1,7 +1,7 @@
 command! -buffer -bang -nargs=0 Vfmt lua require'vlang'.fmt()
 command! -buffer -bang -nargs=0 Vtest lua require'vlang'.test()
-command! -buffer -bang -nargs=0 Vrun lua require'vlang'.run_file()
 command! -buffer -bang -nargs=0 Vvet lua require'vlang'.vet()
+command! -buffer -bang -nargs=+ Vrun lua require'vlang'.run_file(vim.fn.expand("<args>"))
 command! -buffer -bang -nargs=+ Vcom lua require'vlang'.compile(vim.fn.expand("<args>"))
 command! -buffer -bang -nargs=+ Vprod lua require'vlang'.prod(vim.fn.expand("<args>"))
 
@@ -22,5 +22,6 @@ if get(g:, "vlang_nvim_mappings", 1) == 1
   nmap <buffer> <silent> <leader>ef :lua require'vlang'.run_file()<CR>
   nmap <buffer> <silent> <leader>et :lua require'vlang'.test()<CR>
   nmap <buffer> <silent> <leader>ec :lua require'vlang'.prod(vim.fn.input("compile to: "))<CR>
+  nmap <buffer> <silent> <leader>ee :lua require'vlang'.run_file(vim.fn.input("args: "))<CR>
 endif
 
