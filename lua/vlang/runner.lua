@@ -86,7 +86,7 @@ run.float = function(opts)
     outputter(float.bufnr, "Scheduling: " .. path)
   end
 
-  local jobs = F.map(function(path)
+  local jobs = vim.tbl_map(function(path)
     return run._run_path(path, float.bufnr, opts.test, len, opts.run_args)
   end, paths)
 
