@@ -6,7 +6,7 @@ local run = require "vlang.runner"
 
 local on_write = {
   check = (vim.g.vlang_nvim_check_on_write or 1) == 1,
-  format = (vim.g.vlang_nvim_fmt_on_write or 1) == 1,
+  format = (vim.g.vlang_nvim_format_on_write or 1) == 1,
   compile = (vim.g.vlang_nvim_compile_on_write or 1) == 1,
 }
 
