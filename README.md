@@ -36,6 +36,8 @@ let g:vlang_nvim_check_on_write = 1 " vet
 let g:vlang_nvim_format_on_write = 1 " fmt
 let g:vlang_nvim_compile_on_write =  1 " compile
 let g:vlang_nvim_mappings = 1 " use default mappings
+let g:vim.g.vlang_auto_open_quickfix = 1 " whether to auto open quick fix on errors
+
 ```
 
 Commands

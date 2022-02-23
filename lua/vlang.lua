@@ -18,8 +18,7 @@ M.vet = function(cb)
     args = { "vet", vim.fn.expand "%:p" },
     on_exit = function(lines, succ, winnr, _)
       if not vim.tbl_isempty(lines) then
-        print "vlang.nvim: Found suspicious code constructs"
-        qf.open(lines, winnr)
+        qf.open("vet", lines, winnr)
       end
       return cb and cb(vim.tbl_isempty(lines))
     end,
@@ -36,8 +35,7 @@ M.fmt = function(cb)
       -- fmt return 0 regardless of errors, fixed in vlang/v@1e9ec6a
       succ = type(lines[1]:find "file:") == "number"
       if not succ then
-        print "vlang.nvim: failed to format file."
-        qf.open(lines, winnr)
+        qf.open("fmt", lines, winnr)
       else
         misc.update_buffer(pos)
       end
@@ -64,7 +62,7 @@ M.compile = function(args)
     on_exit = function(lines, succ, winnr, _)
       if not succ then
         print "vlang.nvim: Failed to compile"
-        qf.open(lines, winnr)
+        qf.open("compile", lines, winnr)
       elseif notautocmd then
         local msg = "vlang.nvim: compiled %s to %s"
         print(msg:format(vim.fn.expand "%", args))
@@ -92,8 +90,7 @@ M.prod = function(args)
     args = { "-prod", "-o", args, path },
     on_exit = function(lines, succ, winnr, _)
       if not succ then
-        print "vlang.nvim: Failed to compile"
-        qf.open(lines, winnr)
+        qf.open("compile prod", lines, winnr)
       else
         local msg = "vlang.nvim: proc compiled %s to %s"
         print(msg:format(vim.fn.expand "%", args))

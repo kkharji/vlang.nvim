@@ -57,7 +57,6 @@ local get_issues = function(lines)
       issues[i] = { line }
     else
       if issues[i] == nil then
-        vim.fn.writefile(vim.tbl_flatten { "Content:", vim.tbl_flatten(lines) }, "/tmp/vlang_errors.log", "a")
         print(("issues[%d] is nil"):format(i))
       else
         table.insert(issues[i], line)
@@ -73,13 +72,15 @@ local get_issues = function(lines)
   return res
 end
 
-qf.open = function(lines, winnr)
-  vim.fn.setqflist({}, " ")
+local error_msg = 'vlang.nvim: "v %s" failed: "%s"'
+
+qf.open = function(command, lines, winnr)
+  vim.fn.setqflist({}, "r")
 
   local issues = get_issues(lines)
 
   if vim.tbl_isempty(issues) and #lines ~= 0 then
-    print("ERROR:", vim.inspect(lines))
+    print(error_msg:format(command, table.concat(lines, "\\n")))
     return
   elseif type(issues) == "number" then
     return
@@ -89,9 +90,14 @@ qf.open = function(lines, winnr)
     end
   end
 
-  vim.cmd "copen"
-  if winnr ~= vim.fn.winnr() then
-    vim.cmd "wincmd p"
+  if not vim.g.vlang_auto_open_quickfix and vim.g.vlang_auto_open_quickfix ~= 0 then
+    vim.cmd "copen"
+
+    if winnr ~= vim.fn.winnr() then
+      vim.cmd "wincmd p"
+    end
+  else
+    print(error_msg:format(command, "errors appended to quickfix."))
   end
 end
 
