@@ -108,6 +108,14 @@ M.run_file = function(args)
   }
 end
 
+M.test = function(args)
+  return run.float {
+    target = vim.fn.expand "%:p",
+    test = true,
+    run_args = vim.split(args or "", " "),
+  }
+end
+
 local vcompile = function(succ)
   if succ and on_write.compile then
     return M.compile()
